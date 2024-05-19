@@ -35,8 +35,7 @@ Make is optional but recommended for running build commands. Install it using yo
 ## Using cURL
 
 ### Create New Loan
-
-sh
+```
 curl --request POST \
 --url http://localhost:8080/loans \
 --header 'Content-Type: application/json' \
@@ -46,13 +45,35 @@ curl --request POST \
 "amount": 3000000,
 "interest_rate": 10,
 "duration_weeks": 5
-}'
-
+}
+```
 
 ### Check if Loan is Delinquent
 
-sh
+```
 curl --request GET \
 --url http://localhost:8080/loans/39/delinquent \
 --header 'User-Agent: insomnia/9.2.0'
+```
+
+### Get Outstanding
+```
+curl --request GET \
+  --url http://localhost:8080/loans/39/outstanding \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.2.0'
+```
+
+### Make Payment
+```
+curl --request POST \
+  --url http://localhost:8080/loans/39/payment \
+  --header 'Content-Type: application/json' \
+  --header 'User-Agent: insomnia/9.2.0' \
+  --data '{
+	"amount": 183334
+}'
+```
+
+
 
