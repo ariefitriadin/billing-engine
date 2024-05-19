@@ -9,6 +9,15 @@ This project is a billing engine written in Go, using PostgreSQL as the database
 
 ## Installation
 
+### Install Docker
+using docker run : 
+
+```
+docker-compose up -d   
+```
+for up and run postgresql
+
+
 ### Install dbmate
 Follow the instructions to install dbmate from the [dbmate GitHub repository](https://github.com/amacneil/dbmate?tab=readme-ov-file#installation).
 
