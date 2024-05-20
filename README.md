@@ -4,42 +4,22 @@
 This project is a billing engine written in Go, using PostgreSQL as the database.
 
 ## Prerequisites
-- **Go**: Ensure you have Go installed on your machine.
-- **PostgreSQL**: Ensure you have PostgreSQL installed and running.
+- Docker
 
-## Installation
+## Get Up and Running
 
-### Install Docker
-using docker run : 
+### Install Docker if not installed yet
+
+
+### Run using docker-compose : 
 
 ```
-docker-compose up -d   
+docker-compose up
 ```
-for up and run postgresql
 
+- wait until eveything up and running 
 
-### Install dbmate
-Follow the instructions to install dbmate from the [dbmate GitHub repository](https://github.com/amacneil/dbmate?tab=readme-ov-file#installation).
-
-### Install sqlc
-Follow the instructions to install sqlc from the [sqlc documentation](https://docs.sqlc.dev/en/stable/overview/install.html).
-
-### Optional: Install Make
-Make is optional but recommended for running build commands. Install it using your package manager.
-
-## Running Locally
-1. Clone the repository:
-    git clone https://github.com/yourusername/billing-engine.git
-    
-    cd billing-engine
-
-
-2. Run the following command to set up the project:
-
-    make all
-
-
-3. Import the Insomnia file `Insomnia_2024-05-20.json` into Insomnia for testing API endpoints.
+- Import the Insomnia file `Insomnia_2024-05-20.json` into Insomnia for testing API endpoints.
 
 ## Using cURL
 
