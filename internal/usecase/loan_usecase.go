@@ -73,7 +73,7 @@ func (lu *loanUsecase) MakePayment(ctx context.Context, loanID uint, amount floa
 
 	checkDelinquentAmount, err := lu.loanRepo.IsDelinquent(ctx, loanID)
 	if err != nil {
-		return errors.New("failed to check delinquent amount")
+		return fmt.Errorf("loan usecase: failed to check delinquent amount: %w", err)
 	}
 
 	if checkDelinquentAmount.IsDelinquent && amount != float64(checkDelinquentAmount.Amount) {

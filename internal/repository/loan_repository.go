@@ -18,14 +18,39 @@ type loanRepository struct {
 	db      *pgxpool.Pool
 }
 
+type noRowsError struct {
+	sqlNoRow string
+	noRows   string
+}
+
+func (e noRowsError) ErrSqlNoRow() string {
+	e.sqlNoRow = "sql: no rows in result set"
+	return e.sqlNoRow
+}
+
+func (e noRowsError) ErrNoRow() string {
+	e.noRows = "no rows in result set"
+	return e.noRows
+}
+
 func NewLoanRepository(db *pgxpool.Pool) domain.LoanRepository {
 	return &loanRepository{queries: billingengine.New(db), db: db}
 }
 
 func (r *loanRepository) IsDelinquent(ctx context.Context, loanID uint) (*domain.CheckDelinquentAmount, error) {
 	check, err := r.queries.CheckDelinquentAmount(ctx, int32(loanID))
+	ernorow := noRowsError{}
 	if err != nil {
-		return nil, fmt.Errorf("failed to check delinquent amount: %w", err)
+		if err.Error() == ernorow.ErrSqlNoRow() || err.Error() == ernorow.ErrNoRow() {
+			return &domain.CheckDelinquentAmount{
+				LoanID:       uint(loanID),
+				IsDelinquent: false,
+				TotalWeek:    0,
+				Amount:       0,
+			}, nil
+		} else {
+			return nil, fmt.Errorf("loan repo: failed to check delinquent amount: %w", err)
+		}
 	}
 	return &domain.CheckDelinquentAmount{
 		LoanID:       uint(check.LoanID),
