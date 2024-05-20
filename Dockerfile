@@ -19,12 +19,9 @@
 
    COPY . ./
 
-   # Copy wait-for-it.sh script
-   COPY wait-for-it.sh /usr/local/bin/wait-for-it.sh
-   RUN chmod +x /usr/local/bin/wait-for-it.sh
-
-   # Copy .env.example to .env
-   RUN cp .env.example .env
+   RUN chmod +x wait-for-it.sh
+   # Copy .env.docker to .env
+   RUN cp .env.docker .env
 
    RUN go build -o /billing-engine main.go
 

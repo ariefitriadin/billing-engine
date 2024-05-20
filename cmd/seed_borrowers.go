@@ -8,6 +8,7 @@ import (
 
 	"github.com/bxcodec/faker/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/spf13/viper"
 )
 
 type Borrower struct {
@@ -21,8 +22,19 @@ type Borrower struct {
 }
 
 func main() {
+	// Load environment variables from .env file using Viper
+	viper.SetConfigFile(".env")
+	if err := viper.ReadInConfig(); err != nil {
+		log.Fatalf("Error reading config file, %s", err)
+	}
+
 	// Database connection string
-	dsn := "postgres://user:secret@localhost:5432/billing"
+	dsn := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
+		viper.GetString("DB_USER"),
+		viper.GetString("DB_PASSWORD"),
+		viper.GetString("DB_HOST"),
+		viper.GetString("DB_PORT"),
+		viper.GetString("DB_NAME"))
 
 	// Connect to the database
 	dbpool, err := pgxpool.New(context.Background(), dsn)

@@ -1,35 +1,39 @@
-   version: '3.8'
+version: '3.8'
 
-   services:
-     db:
-       image: postgres:14
-       environment:
-         POSTGRES_USER: user
-         POSTGRES_PASSWORD: secret
-         POSTGRES_DB: billing
-       ports:
-         - "5432:5432"
-       volumes:
-         - db_data:/var/lib/postgresql/data
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: billing
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
 
-    #  app:
-    #    build: .
-    #    ports:
-    #      - "8080:8080"
-    #    depends_on:
-    #      - db
-    #    environment:
-    #      DB_HOST: db
-    #      DB_PORT: 5432
-    #      DB_USER: user
-    #      DB_PASSWORD: secret
-    #      DB_NAME: billing
-    #    command: >
-    #      sh -c "
-    #        dbmate -d sql/db/migrations up &&
-    #        go run cmd/seed_borrowers.go &&
-    #        /billing-engine
-    #      "
+  app:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: user
+      DB_PASSWORD: secret
+      DB_NAME: billing
+    command: >
+      sh -c "
+        ./wait-for-it.sh db &&
+        dbmate -d sql/db/migrations up &&
+        go run cmd/seed_borrowers.go &&
+        /billing-engine
+      "
 
-   volumes:
-     db_data:
+volumes:
+  db_data:
+
+networks:
+  billing-network:
