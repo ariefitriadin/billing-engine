@@ -1,3 +1,36 @@
+/*
+Package utils provides utility functions for converting between big.Float and pgtype.Numeric types, and also includes functions to convert pgtype.Numeric to float64 and vice versa. Additionally, it contains a function to compute the ceiling of a big.Float.
+
+Example Usage:
+bigFloat := big.NewFloat(123.456)
+numeric, err := BigFloatToNumeric(bigFloat)
+
+newBigFloat, err := NumericToBigFloat(numeric)
+
+floatVal, err := NumericToFloat64(numeric)
+
+numericFromFloat, err := Float64ToNumeric(123.456)
+
+ceilValue := CeilBigFloat(big.NewFloat(123.456))
+
+Code Analysis:
+Inputs:
+- big.Float: A floating-point number with arbitrary precision.
+- pgtype.Numeric: A PostgreSQL numeric type used to handle arbitrary precision numbers.
+- float64: A floating-point number with double precision.
+
+Flow:
+1. BigFloatToNumeric converts a big.Float to pgtype.Numeric by first converting the big.Float to a string and then scanning it into a pgtype.Numeric.
+2. NumericToBigFloat and NumericToFloat64 convert a pgtype.Numeric to big.Float and float64 respectively, using the integer and exponent parts of pgtype.Numeric.
+3. Float64ToNumeric converts a float64 to pgtype.Numeric by first converting the float64 to big.Float and then using BigFloatToNumeric.
+4. CeilBigFloat calculates the ceiling of a big.Float by separating it into integer and fractional parts, and adjusting the integer part if there is a non-zero fractional component.
+
+Outputs:
+- pgtype.Numeric: The converted numeric type from big.Float or float64.
+- big.Float: The converted or adjusted big floating-point number.
+- float64: The converted double precision floating-point number.
+- error: Potential errors that can occur during conversions or calculations.
+*/
 package utils
 
 import (
@@ -48,22 +81,13 @@ func CeilBigFloat(x *big.Float) *big.Float {
 		return nil
 	}
 
-	// Create a new big.Int to hold the integer part
-	intPart := new(big.Int)
-	// Create a new big.Float to hold the remainder
-	fracPart := new(big.Float)
-
-	// Get the integer part and the fractional part
+	intPart, fracPart := new(big.Int), new(big.Float)
 	x.Int(intPart)
 	fracPart.Sub(x, new(big.Float).SetInt(intPart))
 
-	// If there's a fractional part and the value is positive, add 1 to the integer part
 	if fracPart.Cmp(big.NewFloat(0)) > 0 {
 		intPart.Add(intPart, big.NewInt(1))
 	}
 
-	// Set the result to the integer part
-	result := new(big.Float).SetInt(intPart)
-
-	return result
+	return new(big.Float).SetInt(intPart)
 }

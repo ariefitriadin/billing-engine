@@ -1,4 +1,4 @@
-.PHONY: tidy migrate seed run all
+.PHONY: tidy migrate seed run all test
 
 tidy:
 	go mod tidy
@@ -13,3 +13,6 @@ run:
 	go run main.go
 
 all: tidy migrate seed run
+
+test:
+	go test -cover ./... -coverprofile=coverage.out
